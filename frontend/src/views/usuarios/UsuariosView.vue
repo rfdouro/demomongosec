@@ -17,7 +17,7 @@
    </tr>
   </thead>
   <tbody>
-   <tr v-for="(u, i) in usuarios" v-bind:key="i">
+   <tr v-for="(u, i) in usuarios" v-bind:key="i" @click="abreEdit(u.id)">
     <td>{{ u.id }}</td>
     <td>{{ u.login }}</td>
    </tr>
@@ -83,6 +83,9 @@ export default {
      });
    }
   },
+  abreEdit(id) {
+   this.$router.push(`/usuarios/${id}`);
+  },
  },
 };
 </script>
@@ -90,5 +93,9 @@ export default {
 <style scoped>
 table * {
  border: solid 1px black;
+}
+
+table tbody tr {
+ cursor: pointer;
 }
 </style>

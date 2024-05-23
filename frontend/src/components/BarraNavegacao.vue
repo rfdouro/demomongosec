@@ -5,19 +5,30 @@
   <router-link to="/usuarios">Usuários</router-link> |
   <router-link to="/sobre">Sobre</router-link>
  </nav>
- {{ logado }}
+ {{ logado.login }} | <button @click="desloga">Sair</button>
+ <hr />
 </template>
 
 <script>
+import LoginService from "@/services/LoginService";
 import AuthService from "@/services/AuthService";
 export default {
+ methods: {
+  desloga() {
+   LoginService.deslogar();
+   this.$router.push(`/?d=${new Date()}`);
+  },
+ },
  computed: {
   logado() {
-   return AuthService.dados.login;
+   return AuthService.dados;
   },
  },
 };
 </script>
 
-<style>
+<style scoped>
+nav {
+ text-align: center;
+}
 </style>
