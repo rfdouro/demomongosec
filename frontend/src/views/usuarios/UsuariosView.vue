@@ -9,17 +9,19 @@
   <p><button @click="salvar">Salvar</button></p>
  </fieldset>
 
- <table style="width: 100%">
+ <table style="width: 100%" v-cloak>
   <thead>
    <tr>
     <th style="width: 15%">Id</th>
-    <th>Login</th>
+    <th style="width: 50%">Login</th>
+    <th>Permissões</th>
    </tr>
   </thead>
   <tbody>
    <tr v-for="(u, i) in usuarios" v-bind:key="i" @click="abreEdit(u.id)">
     <td>{{ u.id }}</td>
     <td>{{ u.login }}</td>
+    <td>{{ u.permissoes.length }}</td>
    </tr>
   </tbody>
  </table>
@@ -61,6 +63,8 @@ export default {
    }
   },
   async salvar() {
+   this.user.permissoes = ["ROLE_USER"];
+   console.log(JSON.stringify(this.user));
    if (this.user.login != null && this.user.senha != null) {
     fetch("http://localhost:8080/users", {
      method: "POST",
@@ -97,5 +101,19 @@ table * {
 
 table tbody tr {
  cursor: pointer;
+}
+
+fieldset {
+ border: solid 1px blue;
+}
+
+fieldset input[type="text"] {
+ border: solid 1px blue;
+}
+fieldset input[type="password"] {
+ border: solid 1px blue;
+}
+fieldset button {
+ border: solid 1px blue;
 }
 </style>

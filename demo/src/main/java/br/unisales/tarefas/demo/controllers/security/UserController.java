@@ -7,6 +7,7 @@ import br.unisales.tarefas.demo.annotations.ValidaAcesso;
 import br.unisales.tarefas.demo.controllers.DefaultController;
 import br.unisales.tarefas.demo.models.security.User;
 import br.unisales.tarefas.demo.repositories.security.UserRepository;
+import br.unisales.tarefas.demo.services.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,19 +32,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class UserController extends DefaultController {
 
  @Autowired
- UserRepository userRepository;
+ UserService userService;
 
  @Autowired
  PasswordEncoder passwordEncoder;
 
  @GetMapping("")
  public ResponseEntity<List<User>> todosPorLogin() {
-  return new ResponseEntity(userRepository.findAllByOrderByLoginAsc(), HttpStatus.OK);
+  return new ResponseEntity(userService.repository().findAllByOrderByLoginAsc(), HttpStatus.OK);
  }
 
  @GetMapping("/{id}")
  public ResponseEntity<?> getMethodName(@PathVariable(value = "id", required = true) String id) {
-  User user = userRepository.findById(id).get();
+  User user = userService.repository().findById(id).get();
   if (user != null)
    return new ResponseEntity(user, HttpStatus.OK);
   else
@@ -53,22 +55,34 @@ public class UserController extends DefaultController {
  public ResponseEntity<?> salva(@RequestBody User user) {
   user.setSenha(passwordEncoder.encode(user.getSenha()));
   if (user.getId() != null) {
-   user = userRepository.save(user);
+   user = userService.repository().save(user);
    return new ResponseEntity(user, HttpStatus.resolve(204));
   } else {
-   user = userRepository.save(user);
+   user = userService.insert(user);
    return new ResponseEntity(user, HttpStatus.CREATED);
   }
  }
 
  @PutMapping("/{id}")
  public ResponseEntity<?> atualiza(@PathVariable String id, @RequestBody User user) {
-  Optional<User> ouser = userRepository.findById(id);
+  Optional<User> ouser = userService.repository().findById(id);
   if (ouser.isPresent()) {
    User _user = ouser.get();
    _user.setPermissoes(user.getPermissoes());
-   userRepository.save(_user);
+   userService.repository().save(_user);
    return new ResponseEntity(_user, HttpStatus.OK);
+  } else {
+   return new ResponseEntity("Usuário não existe com o id " + id, HttpStatus.NOT_FOUND);
+  }
+ }
+
+ @DeleteMapping("/{id}")
+ public ResponseEntity<?> exclui(@PathVariable String id) {
+  Optional<User> ouser = userService.repository().findById(id);
+  if (ouser.isPresent()) {
+   User user = ouser.get();
+   userService.repository().delete(user);
+   return new ResponseEntity(user, HttpStatus.OK);
   } else {
    return new ResponseEntity("Usuário não existe com o id " + id, HttpStatus.NOT_FOUND);
   }

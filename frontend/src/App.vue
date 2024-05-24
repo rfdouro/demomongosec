@@ -12,16 +12,37 @@
  padding: 55px;
 }
 
-nav {
- padding: 30px;
+[v-cloak] {
+ display: block;
+ padding: 50px 0;
 }
 
-nav a {
- font-weight: bold;
- color: #2c3e50;
+@keyframes spinner {
+ to {
+  transform: rotate(360deg);
+ }
 }
 
-nav a.router-link-exact-active {
- color: #42b983;
+[v-cloak]:before {
+ content: "";
+ box-sizing: border-box;
+ position: absolute;
+ top: 50%;
+ left: 50%;
+ width: 20px;
+ height: 20px;
+ margin-top: -10px;
+ margin-left: -10px;
+ border-radius: 50%;
+ border: 2px solid #ccc;
+ border-top-color: #333;
+ animation: spinner 0.6s linear infinite;
+ text-indent: 100%;
+ white-space: nowrap;
+ overflow: hidden;
+}
+
+[v-cloak] > * {
+ display: none;
 }
 </style>

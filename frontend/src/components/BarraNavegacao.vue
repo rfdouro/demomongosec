@@ -30,5 +30,15 @@ export default {
 <style scoped>
 nav {
  text-align: center;
+ padding: 30px;
+}
+
+nav a {
+ font-weight: bold;
+ color: #2c3e50;
+}
+
+nav a.router-link-exact-active {
+ color: #2b7ac4;
 }
 </style>

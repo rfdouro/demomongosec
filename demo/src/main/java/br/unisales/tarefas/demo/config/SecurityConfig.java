@@ -2,6 +2,7 @@ package br.unisales.tarefas.demo.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import br.unisales.tarefas.demo.config.handlers.LoginInterceptor;
 import br.unisales.tarefas.demo.models.security.User;
 import br.unisales.tarefas.demo.repositories.security.UserRepository;
+import br.unisales.tarefas.demo.services.UserService;
 import br.unisales.tarefas.demo.util.JWTUtil;
 
 @Configuration
@@ -20,7 +22,7 @@ import br.unisales.tarefas.demo.util.JWTUtil;
 public class SecurityConfig implements CommandLineRunner, WebMvcConfigurer {
 
   @Autowired
-  private UserRepository userRepository;
+  private UserService userService;
 
   @Autowired
   JWTUtil jwtUtil;
@@ -37,7 +39,8 @@ public class SecurityConfig implements CommandLineRunner, WebMvcConfigurer {
       u.setSenha(passwordEncoder().encode("1234"));
       u.getPermissoes().add("ROLE_USER");
       u.getPermissoes().add("ROLE_ADMIN");
-      userRepository.save(u);
+      //userRepository.save(u);
+      userService.insert(u);
     } catch (Exception ex) {
     }
 
@@ -47,7 +50,8 @@ public class SecurityConfig implements CommandLineRunner, WebMvcConfigurer {
       u.setSenha(passwordEncoder().encode("1234"));
       u.getPermissoes().add("ROLE_USER");
       u.getPermissoes().add("ROLE_TAREFAS");
-      userRepository.save(u);
+      //userRepository.save(u);
+      userService.insert(u);
     } catch (Exception ex) {
     }
 
@@ -56,7 +60,8 @@ public class SecurityConfig implements CommandLineRunner, WebMvcConfigurer {
       u.setLogin("usuario2");
       u.setSenha(passwordEncoder().encode("1234"));
       u.getPermissoes().add("ROLE_USER");
-      userRepository.save(u);
+      //userRepository.save(u);
+      userService.insert(u);
     } catch (Exception ex) {
     }
 
@@ -75,7 +80,7 @@ public class SecurityConfig implements CommandLineRunner, WebMvcConfigurer {
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
-    registry.addInterceptor(new LoginInterceptor(userRepository, jwtUtil))
+    registry.addInterceptor(new LoginInterceptor(userService, jwtUtil))
         .excludePathPatterns("/error**", "/index**", "/doc**", "/auth**", "/swagger-ui**", "/v3/api-docs**")
         .addPathPatterns("/tarefas**", "/users**");
   }

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.unisales.tarefas.demo.models.security.User;
 import br.unisales.tarefas.demo.repositories.security.UserRepository;
+import br.unisales.tarefas.demo.services.UserService;
 import br.unisales.tarefas.demo.util.JWTUtil;
 
 import java.util.ArrayList;
@@ -33,14 +34,14 @@ public class AuthController extends DefaultController {
  JWTUtil jwtUtil;
 
  @Autowired
- UserRepository userRepository;
+ UserService userService;
 
  @Autowired
  PasswordEncoder passwordEncoder;
 
  @PostMapping("/login")
  public ResponseEntity<String> login(@RequestParam String login, @RequestParam String senha) throws JsonProcessingException {
-  User user = userRepository.findByLogin(login);
+  User user = userService.repository().findByLogin(login);
 
   if (user == null) {
    request.setAttribute("jakarta.servlet.error.status_code", 400);

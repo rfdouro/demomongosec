@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import br.unisales.tarefas.demo.annotations.ValidaAcesso;
 import br.unisales.tarefas.demo.models.security.User;
 import br.unisales.tarefas.demo.repositories.security.UserRepository;
+import br.unisales.tarefas.demo.services.UserService;
 import br.unisales.tarefas.demo.util.JWTUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,12 +30,12 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class LoginInterceptor implements HandlerInterceptor {
 
- private UserRepository userRepository;
+ private UserService userService;
  private JWTUtil jwtUtil;
  private User user;
 
- public LoginInterceptor(UserRepository userRepository, JWTUtil jwtUtil) {
-  this.userRepository = userRepository;
+ public LoginInterceptor(UserService userService, JWTUtil jwtUtil) {
+  this.userService = userService;
   this.jwtUtil = jwtUtil;
  }
 
@@ -45,7 +46,7 @@ public class LoginInterceptor implements HandlerInterceptor {
    String login = jwtUtil.getUsuarioNoToken(jwttoken);
 
    if (login != null && jwtUtil.validaToken(jwttoken, login)) {
-    user = userRepository.findByLogin(login);
+    user = userService.repository().findByLogin(login);
     List<GrantedAuthority> listaPermissoes = new ArrayList<>();
     user.getPermissoes().forEach(p -> {
      listaPermissoes.add(new SimpleGrantedAuthority(p));

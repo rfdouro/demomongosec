@@ -7,7 +7,7 @@
   <p>Permissões:</p>
   <textarea v-model="usuario.permissoes"></textarea>
   <hr />
-  <button @click="atualizaUsuario">Atualiza</button>
+  <button @click="atualizaUsuario">Atualiza</button> | <button @click="excluiUsuario">Exclui</button>
  </fieldset>
 </template>
 
@@ -53,6 +53,20 @@ export default {
     data: JSON.stringify(this.usuario),
    }).then((r) => {
     console.log(r);
+    this.$router.push("/usuarios")
+   });
+  },
+  excluiUsuario() {
+   axios({
+    method: "DELETE",
+    url: `http://localhost:8080/users/${this.usuario.id}`,
+    headers: {
+     Authorization: `Bearer ${AuthService.dados.token}`,
+     "Content-Type": "application/json",
+    },
+   }).then((r) => {
+    console.log(r);
+    this.$router.push("/usuarios")
    });
   },
  },

@@ -23,7 +23,6 @@ public class User {
  private String id;
  @Indexed(unique = true)
  private String login;
- @JsonIgnore
  private String senha;
 
  private List<String> permissoes = new ArrayList<>();
